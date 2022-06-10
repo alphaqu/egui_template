@@ -1,16 +1,34 @@
-#![warn(clippy::all, rust_2018_idioms)]
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
+extern crate eframe;
+extern crate egui;
 
-// When compiling natively:
-#[cfg(not(target_arch = "wasm32"))]
+use eframe::{App, Frame, NativeOptions, run_native};
+use egui::{Context, Visuals};
+
 fn main() {
-    // Log to stdout (if you run with `RUST_LOG=debug`).
-    tracing_subscriber::fmt::init();
+	run_native(
+		"Rust GUI",
+		NativeOptions::default(),
+		Box::new(|cc| {
+			cc.egui_ctx.set_visuals(Visuals::dark());
+			Box::new(Application {})
+		}),
+	);
+}
 
-    let native_options = eframe::NativeOptions::default();
-    eframe::run_native(
-        "eframe template",
-        native_options,
-        Box::new(|cc| Box::new(eframe_template::TemplateApp::new(cc))),
-    );
+pub struct Application {}
+
+impl App for Application {
+	fn update(&mut self, ctx: &Context, frame: &mut Frame) {
+		egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
+			// Top menu
+		});
+
+		egui::SidePanel::left("side_panel").show(ctx, |ui| {
+			// Side panel on the right
+		});
+
+		egui::CentralPanel::default().show(ctx, |ui| {
+			// Central area
+		});
+	}
 }
